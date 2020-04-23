@@ -3,7 +3,6 @@ package internetshop.dao.impl;
 import internetshop.dao.OrderDao;
 import internetshop.dao.Storage;
 import internetshop.model.Order;
-
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 

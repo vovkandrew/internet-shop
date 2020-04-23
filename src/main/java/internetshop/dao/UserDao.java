@@ -8,7 +8,7 @@ public interface UserDao {
 
     User get(Long id);
 
-    User update(User User);
+    User update(User user);
 
     void delete(Long id);
 }

@@ -4,7 +4,6 @@ import internetshop.dao.BucketDao;
 import internetshop.dao.Storage;
 import internetshop.lib.Dao;
 import internetshop.model.Bucket;
-
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 

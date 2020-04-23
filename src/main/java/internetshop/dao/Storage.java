@@ -1,10 +1,9 @@
 package internetshop.dao;
 
 import internetshop.model.Bucket;
-import internetshop.model.Product;
 import internetshop.model.Order;
+import internetshop.model.Product;
 import internetshop.model.User;
-
 import java.util.ArrayList;
 import java.util.List;
 

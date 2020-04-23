@@ -1,10 +1,9 @@
 package internetshop.dao.impl;
 
-import internetshop.dao.UserDao;
 import internetshop.dao.Storage;
+import internetshop.dao.UserDao;
 import internetshop.lib.Dao;
 import internetshop.model.User;
-
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 

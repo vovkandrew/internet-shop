@@ -4,7 +4,7 @@ import internetshop.lib.Injector;
 import internetshop.model.Product;
 import internetshop.service.ProductService;
 
-public class Main  {
+public class Main {
     public static Injector injector = Injector.getInstance("internetshop");
 
     public static void main(String [] args) {
