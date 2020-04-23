@@ -1,10 +1,13 @@
 package internetshop.dao.impl;
 
 import internetshop.dao.ProductDao;
-import internetshop.dao.Storage;
+import internetshop.db.Storage;
 import internetshop.lib.Dao;
 import internetshop.model.Product;
+
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Dao
@@ -17,12 +20,17 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public Product get(Long id) {
-        return Storage.products
+    public Optional<Product> get(Long id) {
+        return Optional.of(Storage.products
                 .stream()
                 .filter(item -> item.getId().equals(id))
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoSuchElementException::new));
+    }
+
+    @Override
+    public List<Product> getAll() {
+        return Storage.products;
     }
 
     @Override

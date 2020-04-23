@@ -1,4 +1,4 @@
-package internetshop.dao;
+package internetshop.db;
 
 import internetshop.model.Bucket;
 import internetshop.model.Order;
