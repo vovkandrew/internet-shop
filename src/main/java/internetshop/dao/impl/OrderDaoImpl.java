@@ -5,7 +5,6 @@ import internetshop.db.Storage;
 import internetshop.lib.Dao;
 import internetshop.model.Order;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -20,11 +19,10 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Optional<Order> get(Long orderId) {
-        return Optional.of(Storage.orders
+        return Storage.orders
                 .stream()
                 .filter(order -> order.getId().equals(orderId))
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new));
+                .findFirst();
     }
 
     @Override

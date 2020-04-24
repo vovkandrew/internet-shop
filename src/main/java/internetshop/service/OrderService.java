@@ -4,7 +4,6 @@ import internetshop.model.Order;
 import internetshop.model.Product;
 import internetshop.model.User;
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService {
 
@@ -12,7 +11,7 @@ public interface OrderService {
 
     List<Order> getUserOrders(User user);
 
-    Optional<Order> get(Long orderId);
+    Order get(Long orderId);
 
     List<Order> getAll();
 

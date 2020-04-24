@@ -17,29 +17,22 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCart addProduct(ShoppingCart shoppingCart, Product product) {
-        if (shoppingCart.getProducts().isEmpty()) {
-            shoppingCartDao.create(shoppingCart);
-        }
-        shoppingCartDao.getAll()
-                .stream().filter(shoppingCart1 ->
-                shoppingCart1.getId().equals(shoppingCart.getId()))
-                .forEach(shoppingCart1 -> shoppingCart1.addProduct(product));
-        return shoppingCart;
+        shoppingCart.addProduct(product);
+        return shoppingCartDao.update(shoppingCart);
     }
 
     @Override
     public boolean deleteProduct(ShoppingCart shoppingCart, Product product) {
-        shoppingCart.getProducts()
+        boolean removed = shoppingCart.getProducts()
                 .removeIf(product1 -> product1.getId().equals(product.getId()));
-        return true;
+        shoppingCartDao.update(shoppingCart);
+        return removed;
     }
 
     @Override
     public void clear(ShoppingCart shoppingCart) {
-        shoppingCartDao.getAll()
-                .stream()
-                .filter(shoppingCart1 -> shoppingCart1.getId().equals(shoppingCart.getId()))
-                .forEach(shoppingCart1 -> shoppingCart1.getProducts().clear());
+        shoppingCart.getProducts().clear();
+        shoppingCartDao.update(shoppingCart);
     }
 
     @Override
