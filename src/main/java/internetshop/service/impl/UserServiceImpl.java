@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(Long userId) {
-        return userDao.get(userId).orElseThrow();
+        return userDao.get(userId).get();
     }
 
     @Override
@@ -34,8 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean delete(Long userId) {
+    public void delete(Long userId) {
         userDao.delete(userId);
-        return true;
     }
 }
