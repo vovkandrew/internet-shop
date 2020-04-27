@@ -1,19 +1,22 @@
 package internetshop.service.impl;
 
 import internetshop.dao.ShoppingCartDao;
+import internetshop.dao.UserDao;
 import internetshop.lib.Inject;
 import internetshop.lib.Service;
 import internetshop.model.Product;
 import internetshop.model.ShoppingCart;
 import internetshop.service.ShoppingCartService;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Inject
     ShoppingCartDao shoppingCartDao;
+
+    @Inject
+    UserDao userDao;
 
     @Override
     public ShoppingCart addProduct(ShoppingCart shoppingCart, Product product) {
@@ -41,7 +44,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .stream()
                 .filter(shoppingCart -> shoppingCart.getUser().getId().equals(userId))
                 .findAny()
-                .orElseThrow(NoSuchElementException::new);
+                .orElse(shoppingCartDao.create(new ShoppingCart(userDao.get(userId).get())));
     }
 
     @Override
