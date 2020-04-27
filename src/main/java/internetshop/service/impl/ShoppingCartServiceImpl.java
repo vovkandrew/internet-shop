@@ -23,10 +23,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public boolean deleteProduct(ShoppingCart shoppingCart, Product product) {
-        boolean removed = shoppingCart.getProducts()
+        boolean isRemoved = shoppingCart.getProducts()
                 .removeIf(product1 -> product1.getId().equals(product.getId()));
         shoppingCartDao.update(shoppingCart);
-        return removed;
+        return isRemoved;
     }
 
     @Override
@@ -46,11 +46,31 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public List<Product> getAllProducts(ShoppingCart shoppingCart) {
-        return shoppingCartDao.getAll()
-                .stream()
-                .filter(shoppingCart1 -> shoppingCart1.getId().equals(shoppingCart.getId()))
-                .findAny()
-                .map(ShoppingCart::getProducts)
-                .get();
+        return shoppingCart.getProducts();
+    }
+
+    @Override
+    public ShoppingCart create(ShoppingCart element) {
+        return shoppingCartDao.create(element);
+    }
+
+    @Override
+    public ShoppingCart get(Long id) {
+        return shoppingCartDao.get(id).get();
+    }
+
+    @Override
+    public List<ShoppingCart> getAll() {
+        return shoppingCartDao.getAll();
+    }
+
+    @Override
+    public ShoppingCart update(ShoppingCart element) {
+        return shoppingCartDao.update(element);
+    }
+
+    @Override
+    public void delete(Long id) {
+        shoppingCartDao.delete(id);
     }
 }

@@ -41,7 +41,7 @@ public class Main {
         userService.get(user2.getId());
         System.out.println(user2.toString());
         User user3 = userService.create(new User("Tyler"));
-        userService.get(user3.getId());
+        System.out.println(userService.get(user3.getId()));
         System.out.println(user3.toString());
         System.out.println(userService.getAll());
         System.out.println("");
@@ -76,13 +76,10 @@ public class Main {
         Order order1 = orderService
                 .completeOrder(shoppingCart1.getProducts(),
                         shoppingCart1.getUser());
-        Order order2 = orderService
-                .completeOrder(shoppingCart1.getProducts(),
-                        shoppingCart1.getUser());
         System.out.println(order1.getId().toString());
         System.out.println(orderService.get(order1.getId()));
         System.out.println(orderService.getAll());
         System.out.println(orderService.getUserOrders(user3));
-        System.out.println(orderService.delete(order1.getId()));
+        orderService.delete(order1.getId());
     }
 }
