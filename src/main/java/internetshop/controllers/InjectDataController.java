@@ -1,6 +1,5 @@
 package internetshop.controllers;
 
-import internetshop.lib.Inject;
 import internetshop.lib.Injector;
 import internetshop.model.Product;
 import internetshop.model.ShoppingCart;
@@ -16,13 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 
 public class InjectDataController extends HttpServlet {
     private static final Long USER_ID = 1L;
-    @Inject
-    private static final Injector injector = Injector.getInstance("internetshop");
-    private final UserService userService = (UserService) injector.getInstance(UserService.class);
+    private static final Injector INJECTOR = Injector.getInstance("internetshop");
+    private final UserService userService = (UserService) INJECTOR.getInstance(UserService.class);
     private final ProductService productService =
-            (ProductService) injector.getInstance(ProductService.class);
+            (ProductService) INJECTOR.getInstance(ProductService.class);
     private final ShoppingCartService shoppingCartService =
-            (ShoppingCartService) injector.getInstance(ShoppingCartService.class);
+            (ShoppingCartService) INJECTOR.getInstance(ShoppingCartService.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

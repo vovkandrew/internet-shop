@@ -1,6 +1,5 @@
 package internetshop.controllers;
 
-import internetshop.lib.Inject;
 import internetshop.lib.Injector;
 import internetshop.model.Product;
 import internetshop.service.ProductService;
@@ -11,8 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ProductController extends HttpServlet {
-    @Inject
+public class GetAllProductsController extends HttpServlet {
     private static final Injector INJECTOR =
             Injector.getInstance("internetshop");
     private final ProductService productService =
