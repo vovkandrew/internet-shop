@@ -31,5 +31,8 @@
         </td>
     </tr>
     </c:forEach>
+</table>
+<h1> </h1>
+<a href="${pageContext.request.contextPath}/shoppingcart">Check your cart</a>
 </body>
 </html>

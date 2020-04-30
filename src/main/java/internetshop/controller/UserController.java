@@ -1,4 +1,4 @@
-package internetshop.controllers;
+package internetshop.controller;
 
 import internetshop.lib.Injector;
 import internetshop.model.User;

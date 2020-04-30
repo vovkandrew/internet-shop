@@ -22,9 +22,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order completeOrder(List<Product> products, User user) {
-        shoppingCartService.clear(shoppingCartService.getByUserId(user.getId()));
+        List<Product> newOrder = List.copyOf(products);
         Order order = new Order(user);
-        order.addProducts(products);
+        order.addProducts(newOrder);
         return orderDao.create(order);
     }
 
