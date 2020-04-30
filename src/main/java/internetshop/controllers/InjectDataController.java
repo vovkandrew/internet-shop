@@ -37,12 +37,6 @@ public class InjectDataController extends HttpServlet {
         productService.create(samsung);
         Product huawei = new Product("Huawei", 500.00);
         productService.create(huawei);
-        Product xiaomi = new Product("Xiaomi", 300.00);
-        productService.create(xiaomi);
-        Product oneplus = new Product("Oneplus", 450.00);
-        productService.create(oneplus);
-        Product meizu = new Product("Meizu", 400.00);
-        productService.create(meizu);
         ShoppingCart userCart = new ShoppingCart(userService.get(USER_ID));
         shoppingCartService.create(userCart);
         req.getRequestDispatcher("/WEB-INF/views/injectData.jsp").forward(req, resp);

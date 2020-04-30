@@ -38,12 +38,4 @@ public class Order {
         return user;
     }
 
-    public String getProductsDescription() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Product product: this.products) {
-            stringBuilder.append(" ").append(product.getId())
-                    .append("-").append(product.getName()).append(".");
-        }
-        return stringBuilder.toString();
-    }
 }
