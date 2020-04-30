@@ -1,16 +1,15 @@
-package internetshop.controllers;
+package internetshop.controller;
 
 import internetshop.lib.Injector;
 import internetshop.model.Product;
 import internetshop.service.ProductService;
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class GetAllProductsForAdminController extends HttpServlet {
+public class AddProductController extends HttpServlet {
     private static final Injector INJECTOR =
             Injector.getInstance("internetshop");
     private final ProductService productService =
@@ -19,9 +18,16 @@ public class GetAllProductsForAdminController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        List<Product> products = productService.getAll();
-        req.setAttribute("products", products);
-        req.getRequestDispatcher("/WEB-INF/views/products/alladmin.jsp")
-                .forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/addproduct.jsp").forward(req, resp);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        String name = req.getParameter("name");
+        String price = req.getParameter("price");
+        productService.create(new Product(name, Double.valueOf(price)));
+        resp.sendRedirect(req.getContextPath() + "/products/all");
+    }
+
 }

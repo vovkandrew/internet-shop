@@ -1,4 +1,4 @@
-package internetshop.controllers;
+package internetshop.controller;
 
 import java.io.IOException;
 import java.time.LocalTime;
