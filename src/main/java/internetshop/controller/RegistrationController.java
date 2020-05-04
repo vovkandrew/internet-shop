@@ -26,8 +26,7 @@ public class RegistrationController extends HttpServlet {
         String password = req.getParameter("pwd");
         String passwordRepeat = req.getParameter("pwdRep");
         if (password.equals(passwordRepeat)) {
-            User user = new User(login);
-            user.setPassword(password);
+            User user = new User(login, password);
             userService.create(user);
             resp.sendRedirect(req.getContextPath() + "/");
         } else {

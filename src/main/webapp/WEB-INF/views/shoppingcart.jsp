@@ -14,22 +14,22 @@
         <th>Price</th>
     </tr>
     <c:forEach var="product" items="${products}">
-    <tr>
-        <td>
-            <c:out value="${product.id}"/>
-        </td>
-        <td>
-            <c:out value="${product.name}"/>
-        </td>
-        <td>
-            <c:out value="${product.price}"/>
-        </td>
-        <td>
-            <a href="${pageContext.request.contextPath}/shoppingcart/delete?id=${product.id}">
-                Delete
-            </a>
-        </td>
-    </tr>
+        <tr>
+            <td>
+                <c:out value="${product.id}"/>
+            </td>
+            <td>
+                <c:out value="${product.name}"/>
+            </td>
+            <td>
+                <c:out value="${product.price}"/>
+            </td>
+            <td>
+                <a href="${pageContext.request.contextPath}/shoppingcart/delete?id=${product.id}">
+                    Delete
+                </a>
+            </td>
+        </tr>
     </c:forEach>
 </table>
 <h1> </h1>

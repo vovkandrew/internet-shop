@@ -3,7 +3,6 @@ package internetshop.controller;
 import internetshop.lib.Injector;
 import internetshop.model.Product;
 import internetshop.model.ShoppingCart;
-import internetshop.model.User;
 import internetshop.service.ProductService;
 import internetshop.service.ShoppingCartService;
 import internetshop.service.UserService;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class InjectDataController extends HttpServlet {
-    private static final Long USER_ID = 1L;
+    private static final String USER_ID = "user_id";
     private static final Injector INJECTOR = Injector.getInstance("internetshop");
     private final UserService userService = (UserService) INJECTOR.getInstance(UserService.class);
     private final ProductService productService =
@@ -25,12 +24,6 @@ public class InjectDataController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        User andrew = new User("Andrew");
-        userService.create(andrew);
-        User vince = new User("Vincent");
-        userService.create(vince);
-        User tyler = new User("Tyler");
-        userService.create(tyler);
         Product iphone = new Product("iPhone", 1000.00);
         productService.create(iphone);
         Product samsung = new Product("Samsung", 700.00);
@@ -43,7 +36,8 @@ public class InjectDataController extends HttpServlet {
         productService.create(oneplus);
         Product meizu = new Product("Meizu", 400.00);
         productService.create(meizu);
-        ShoppingCart userCart = new ShoppingCart(userService.get(USER_ID));
+        Long userId = (Long) req.getSession().getAttribute(USER_ID);
+        ShoppingCart userCart = new ShoppingCart(userService.get(userId));
         shoppingCartService.create(userCart);
         req.getRequestDispatcher("/WEB-INF/views/injectData.jsp").forward(req, resp);
     }
