@@ -69,7 +69,7 @@
 
     <servlet>
         <servlet-name>shopppingcart</servlet-name>
-        <servlet-class>internetshop.controller.ShoppingCartController</servlet-class>
+        <servlet-class>internetshop.controller.GetShoppingCartController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>shopppingcart</servlet-name>
@@ -132,7 +132,7 @@
 
     <servlet>
         <servlet-name>allorders</servlet-name>
-        <servlet-class>internetshop.controller.GetAllOrdersController</servlet-class>
+        <servlet-class>internetshop.controller.GetUserOrdersController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>allorders</servlet-name>
