@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class GetAllOrdersController extends HttpServlet {
+public class GetUserOrdersController extends HttpServlet {
     private static final String USER_ID = "user_id";
     private static final Injector INJECTOR =
             Injector.getInstance("internetshop");
