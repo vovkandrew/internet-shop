@@ -23,15 +23,16 @@ public class RegistrationController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String login = req.getParameter("login");
-        String username = req.getParameter("username");
         String password = req.getParameter("pwd");
         String passwordRepeat = req.getParameter("pwdRep");
         if (password.equals(passwordRepeat)) {
-            userService.create(new User(username));
+            User user = new User(login);
+            user.setPassword(password);
+            userService.create(user);
             resp.sendRedirect(req.getContextPath() + "/");
         } else {
             req.setAttribute("message",
-                    "Your password and repeated password missmatch");
+                    "Your password and repeated password mismatch");
             req.getRequestDispatcher("/WEB-INF/views/registration.jsp").forward(req, resp);
         }
     }
