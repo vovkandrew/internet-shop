@@ -1,10 +1,13 @@
 package internetshop.model;
 
+import java.util.List;
+
 public class User {
 
     private Long id;
     private String name;
     private String password;
+    private List<Role> roles;
 
     public User(String name) {
         this.name = name;
@@ -44,5 +47,13 @@ public class User {
         return "User{"
                 + "id=" + id
                 + ", name='" + name + '\'' + '}';
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

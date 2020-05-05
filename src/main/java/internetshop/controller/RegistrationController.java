@@ -1,9 +1,11 @@
 package internetshop.controller;
 
 import internetshop.lib.Injector;
+import internetshop.model.Role;
 import internetshop.model.User;
 import internetshop.service.UserService;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,7 @@ public class RegistrationController extends HttpServlet {
         String passwordRepeat = req.getParameter("pwdRep");
         if (password.equals(passwordRepeat)) {
             User user = new User(login, password);
+            user.setRoles(List.of(Role.of("USER")));
             userService.create(user);
             resp.sendRedirect(req.getContextPath() + "/");
         } else {

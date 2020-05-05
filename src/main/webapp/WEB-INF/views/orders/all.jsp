@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="orders" scope="request" type="java.util.List<internetshop.model.Order>"/>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
