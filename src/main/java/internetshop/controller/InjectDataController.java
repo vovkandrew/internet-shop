@@ -9,7 +9,7 @@ import internetshop.service.ProductService;
 import internetshop.service.ShoppingCartService;
 import internetshop.service.UserService;
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class InjectDataController extends HttpServlet {
         Product meizu = new Product("Meizu", 400.00);
         productService.create(meizu);
         User admin = new User("admin", "1");
-        admin.setRoles(List.of(Role.of("ADMIN")));
+        admin.setRoles(Set.of(Role.of("ADMIN")));
         userService.create(admin);
         Long userId = (Long) req.getSession().getAttribute(USER_ID);
         ShoppingCart userCart = new ShoppingCart(userService.get(userId));
