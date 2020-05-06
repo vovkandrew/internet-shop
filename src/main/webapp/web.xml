@@ -32,12 +32,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>injectData</servlet-name>
+        <servlet-name>injectdata</servlet-name>
         <servlet-class>internetshop.controller.InjectDataController</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>injectData</servlet-name>
-        <url-pattern>/injectData</url-pattern>
+        <servlet-name>injectdata</servlet-name>
+        <url-pattern>/injectdata</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -166,12 +166,30 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>logout</servlet-name>
+        <servlet-class>internetshop.controller.LogoutController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>authenticationfilter</filter-name>
         <filter-class>internetshop.web.filter.AuthenticationFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>authenticationfilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>authorizationfilter</filter-name>
+        <filter-class>internetshop.web.filter.AuthorizationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>authorizationfilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 </web-app>

@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="products" scope="request" type="java.util.List<internetshop.model.Product>"/>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
@@ -7,6 +6,7 @@
 </head>
 <body>
 <h1>Shopping cart</h1>
+<h2 style="color: crimson">${message}</h2>
 <table border="2">
     <tr>
         <th>ID</th>
