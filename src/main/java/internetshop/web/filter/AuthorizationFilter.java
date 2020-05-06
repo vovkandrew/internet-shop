@@ -28,9 +28,16 @@ public class AuthorizationFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         urlMappring.put("/addproduct", Set.of(Role.RoleName.ADMIN));
         urlMappring.put("/products/alladmin", Set.of(Role.RoleName.ADMIN));
+        urlMappring.put("/products/alladmin/delete", Set.of(Role.RoleName.ADMIN));
         urlMappring.put("/users/all", Set.of(Role.RoleName.ADMIN));
+        urlMappring.put("/users/delete", Set.of(Role.RoleName.ADMIN));
         urlMappring.put("/shoppingcart", Set.of(Role.RoleName.USER));
+        urlMappring.put("/shoppingcart/add", Set.of(Role.RoleName.USER));
+        urlMappring.put("/shoppingcart/delete", Set.of(Role.RoleName.USER));
+        urlMappring.put("/shoppingcart/completeorder", Set.of(Role.RoleName.USER));
+        urlMappring.put("/ordercreated", Set.of(Role.RoleName.USER));
         urlMappring.put("/orders/all", Set.of(Role.RoleName.USER));
+        urlMappring.put("/orders/all/delete", Set.of(Role.RoleName.USER));
         urlMappring.put("/products/all", Set.of(Role.RoleName.USER));
         urlMappring.put("/orderdetails", Set.of(Role.RoleName.USER));
     }
