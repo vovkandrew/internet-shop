@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 public class LoginController extends HttpServlet {
-    static Logger logger = Logger.getLogger(LoginController.class);
+    private static Logger logger = Logger.getLogger(LoginController.class);
     private static final Injector INJECTOR =
             Injector.getInstance("internetshop");
     private final AuthenticationService authenticationService =
@@ -34,12 +34,11 @@ public class LoginController extends HttpServlet {
             User user = authenticationService.getByLogin(login, pwd);
             HttpSession session = req.getSession();
             session.setAttribute("user_id", user.getId());
-            if (logger.isInfoEnabled()) {
-                logger.info(String.format(
-                        "User %s ID %s logged in",
-                        user.getName(),
-                        String.valueOf(user.getId())));
-            }
+            logger.info(String.format(
+                    "User %s ID %s logged in",
+                    user.getName(),
+                    String.valueOf(user.getId())));
+
         } catch (AuthenticationException e) {
             req.setAttribute("errorMessage", e.getMessage());
             req.getRequestDispatcher("/WEB-INF/views/loginpage.jsp").forward(req, resp);
