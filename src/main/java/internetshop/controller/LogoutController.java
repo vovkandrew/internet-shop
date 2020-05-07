@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 public class LogoutController extends HttpServlet {
-    private static Logger logger = Logger.getLogger(LoginController.class);
+    private static Logger logger = Logger.getLogger(LogoutController.class);
     private static final String USER_ID = "user_id";
     private static final Injector INJECTOR =
             Injector.getInstance("internetshop");

@@ -1,4 +1,4 @@
 .idea*
 *.iml
 /target*
-/file_with_logs*
+/folder_with_logs
