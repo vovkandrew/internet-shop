@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 public class LoginController extends HttpServlet {
-    private static Logger logger = Logger.getLogger(LoginController.class);
+    private static final Logger logger = Logger.getLogger(LoginController.class);
     private static final Injector INJECTOR =
             Injector.getInstance("internetshop");
     private final AuthenticationService authenticationService =
