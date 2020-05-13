@@ -1,7 +1,6 @@
 package internetshop.controller;
 
 import internetshop.lib.Injector;
-import internetshop.model.Product;
 import internetshop.model.Role;
 import internetshop.model.ShoppingCart;
 import internetshop.model.User;
@@ -27,18 +26,6 @@ public class InjectDataController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        Product iphone = new Product("iPhone", 1000.00);
-        productService.create(iphone);
-        Product samsung = new Product("Samsung", 700.00);
-        productService.create(samsung);
-        Product huawei = new Product("Huawei", 500.00);
-        productService.create(huawei);
-        Product xiaomi = new Product("Xiaomi", 300.00);
-        productService.create(xiaomi);
-        Product oneplus = new Product("Oneplus", 450.00);
-        productService.create(oneplus);
-        Product meizu = new Product("Meizu", 400.00);
-        productService.create(meizu);
         User admin = new User("admin", "1");
         admin.setRoles(Set.of(Role.of("ADMIN")));
         userService.create(admin);
