@@ -1,0 +1,5 @@
+2020-05-11 20:50:31 INFO  LoginController:37 - User andrew ID 1 logged in
+2020-05-11 20:52:31 INFO  LoginController:25 - User andrew ID 1 logged out
+2020-05-11 20:52:35 INFO  LoginController:37 - User admin ID 2 logged in
+2020-05-11 20:52:44 INFO  LoginController:25 - User admin ID 2 logged out
+2020-05-11 20:52:49 INFO  LoginController:37 - User admin ID 2 logged in

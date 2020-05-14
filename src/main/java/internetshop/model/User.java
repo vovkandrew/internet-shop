@@ -9,6 +9,9 @@ public class User {
     private String password;
     private Set<Role> roles;
 
+    public User() {
+    }
+
     public User(String name) {
         this.name = name;
     }

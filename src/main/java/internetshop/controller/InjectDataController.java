@@ -30,7 +30,7 @@ public class InjectDataController extends HttpServlet {
         admin.setRoles(Set.of(Role.of("ADMIN")));
         userService.create(admin);
         Long userId = (Long) req.getSession().getAttribute(USER_ID);
-        ShoppingCart userCart = new ShoppingCart(userService.get(userId));
+        ShoppingCart userCart = new ShoppingCart(userId);
         shoppingCartService.create(userCart);
         req.getRequestDispatcher("/WEB-INF/views/injectdata.jsp").forward(req, resp);
 

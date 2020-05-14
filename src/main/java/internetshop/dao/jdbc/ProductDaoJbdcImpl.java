@@ -20,21 +20,21 @@ public class ProductDaoJbdcImpl implements ProductDao {
     private static final Logger LOGGER = Logger.getLogger(LoginController.class);
 
     @Override
-    public Product create(Product element) {
+    public Product create(Product product) {
         String query = "INSERT INTO internetshop.products (name, price) VALUES (?, ?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, element.getName());
-            preparedStatement.setDouble(2, element.getPrice());
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setDouble(2, product.getPrice());
             preparedStatement.executeUpdate();
             LOGGER.info(String.format(
                     "Product %s with price %s has been created",
-                    element.getName(),
-                    String.valueOf(element.getPrice())));
+                    product.getName(),
+                    String.valueOf(product.getPrice())));
         } catch (SQLException e) {
-            throw new DataProcessingException("Product creationg has failed", e);
+            throw new DataProcessingException("Product creation has failed", e);
         }
-        return element;
+        return product;
     }
 
     @Override
@@ -75,20 +75,20 @@ public class ProductDaoJbdcImpl implements ProductDao {
     }
 
     @Override
-    public Product update(Product element) {
+    public Product update(Product product) {
         String query = "UPDATE internetshop.products SET name = ?, price = ? WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, element.getName());
-            preparedStatement.setDouble(2, element.getPrice());
-            preparedStatement.setLong(3, element.getId());
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setDouble(2, product.getPrice());
+            preparedStatement.setLong(3, product.getId());
             preparedStatement.executeUpdate();
             LOGGER.info(String.format("Product %s with ID %s has been updated",
-                    element.getName(), String.valueOf(element.getId())));
+                    product.getName(), String.valueOf(product.getId())));
         } catch (SQLException e) {
             throw new DataProcessingException("Can't update product details", e);
         }
-        return element;
+        return product;
     }
 
     @Override
