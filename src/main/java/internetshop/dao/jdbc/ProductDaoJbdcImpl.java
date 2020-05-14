@@ -37,6 +37,23 @@ public class ProductDaoJbdcImpl implements ProductDao {
         return product;
     }
 
+    public Product create(Product element) {
+        String query = "INSERT INTO internetshop.products (name, price) VALUES (?, ?)";
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, element.getName());
+            preparedStatement.setDouble(2, element.getPrice());
+            preparedStatement.executeUpdate();
+            LOGGER.info(String.format(
+                    "Product %s with price %s has been created",
+                    element.getName(),
+                    String.valueOf(element.getPrice())));
+        } catch (SQLException e) {
+            throw new DataProcessingException("Product creationg has failed", e);
+        }
+        return element;
+    }
+
     @Override
     public Optional<Product> get(Long id) {
         String query = "SELECT * FROM internetshop.products WHERE id = ?";
@@ -89,6 +106,22 @@ public class ProductDaoJbdcImpl implements ProductDao {
             throw new DataProcessingException("Can't update product details", e);
         }
         return product;
+    }
+  
+    public Product update(Product element) {
+        String query = "UPDATE internetshop.products SET name = ?, price = ? WHERE id = ?";
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, element.getName());
+            preparedStatement.setDouble(2, element.getPrice());
+            preparedStatement.setLong(3, element.getId());
+            preparedStatement.executeUpdate();
+            LOGGER.info(String.format("Product %s with ID %s has been updated",
+                    element.getName(), String.valueOf(element.getId())));
+        } catch (SQLException e) {
+            throw new DataProcessingException("Can't update product details", e);
+        }
+        return element;
     }
 
     @Override
