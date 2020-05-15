@@ -43,7 +43,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
                         + "FROM internetshop.shopping_carts "
                         + "INNER JOIN internetshop.shopping_cart_products "
                         + "ON internetshop.shopping_carts.id = "
-                        + "internetshop.shopping_cart_products.shoppingcart_id "
+                        + "internetshop.shopping_cart_products.cart_id "
                         + "INNER JOIN internetshop.products "
                         + "ON internetshop.shopping_cart_products.product_id "
                         + "= internetshop.products.id "
@@ -92,7 +92,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
     @Override
     public ShoppingCart update(ShoppingCart shoppingCart) {
         String query = "DELETE FROM internetshop.shopping_cart_products "
-                + "WHERE internetshop.shopping_cart_products.shoppingcart_id = ?";
+                + "WHERE internetshop.shopping_cart_products.cart_id = ?";
         String query2 = "INSERT INTO internetshop.shopping_cart_products VALUES (?, ?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
             if (!shoppingCart.getProducts().isEmpty()) {
@@ -115,7 +115,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
 
     @Override
     public void delete(Long id) {
-        String query = "DELETE FROM internetshop.shopping_cart_products WHERE shoppingcart_id = ?";
+        String query = "DELETE FROM internetshop.shopping_cart_products WHERE cart_id = ?";
         String query2 = "DELETE FROM internetshop.shopping_carts WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);

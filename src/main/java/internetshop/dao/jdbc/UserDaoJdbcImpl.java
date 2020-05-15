@@ -45,12 +45,13 @@ public class UserDaoJdbcImpl implements UserDao {
             preparedStatement3.setString(1, user.getName());
             preparedStatement3.setString(2, user.getPassword());
             ResultSet resultSet = preparedStatement3.executeQuery();
-            resultSet.next();
-            Long userId = resultSet.getLong("id");
-            PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
-            preparedStatement2.setLong(1, userId);
-            preparedStatement2.setLong(2, 2L);
-            preparedStatement2.executeUpdate();
+            if (resultSet.next()) {
+                user.setId(resultSet.getLong("id"));
+                PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+                preparedStatement2.setLong(1, resultSet.getLong("id"));
+                preparedStatement2.setLong(2, 2L);
+                preparedStatement2.executeUpdate();
+            }
             LOGGER.info("New user created");
             return user;
         } catch (SQLException e) {

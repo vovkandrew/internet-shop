@@ -69,6 +69,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
                 orderProducts.add(getProductFromResultSet(resultSet));
             } while (resultSet.next());
             LOGGER.info("Order has been found in the database");
+            order.setProducts(orderProducts);
             return Optional.of(order);
         } catch (SQLException e) {
             throw new DataProcessingException("Can't find this order", e);
@@ -83,9 +84,11 @@ public class OrderDaoJdbcImpl implements OrderDao {
             ResultSet resultSet = preparedStatement.executeQuery(query);
             List<Order> orders = new ArrayList<>();
             while (resultSet.next()) {
-                orders.add(get(resultSet.getLong("id")).get());
+                if (get(resultSet.getLong("id")).isPresent()) {
+                    orders.add(get(resultSet.getLong("id")).get());
+                }
             }
-            LOGGER.info(String.format("Orders have been found in the database"));
+            LOGGER.info("Orders have been found in the database");
             return orders;
         } catch (SQLException e) {
             throw new DataProcessingException("Can't show all orders", e);

@@ -27,10 +27,7 @@ public class ProductDaoJbdcImpl implements ProductDao {
             preparedStatement.setString(1, product.getName());
             preparedStatement.setDouble(2, product.getPrice());
             preparedStatement.executeUpdate();
-            LOGGER.info(String.format(
-                    "Product %s with price %s has been created",
-                    product.getName(),
-                    String.valueOf(product.getPrice())));
+            LOGGER.info("Product has been created");
         } catch (SQLException e) {
             throw new DataProcessingException("Product creation has failed", e);
         }
@@ -44,10 +41,10 @@ public class ProductDaoJbdcImpl implements ProductDao {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 return Optional.of(getProductFromResultSet(resultSet));
             }
-            LOGGER.info(String.format("Request to get a product with ID %s fulfilled", id));
+            LOGGER.info("Product has been found");
         } catch (SQLException e) {
             throw new DataProcessingException("Can't find product with following id", e);
         }
@@ -67,7 +64,7 @@ public class ProductDaoJbdcImpl implements ProductDao {
                 product.setId(productId);
                 productList.add(product);
             }
-            LOGGER.info(String.format("List of products has been sent"));
+            LOGGER.info("List of products has been sent");
         } catch (SQLException e) {
             throw new DataProcessingException("Can't retreave all available products from DB", e);
         }
@@ -83,8 +80,7 @@ public class ProductDaoJbdcImpl implements ProductDao {
             preparedStatement.setDouble(2, product.getPrice());
             preparedStatement.setLong(3, product.getId());
             preparedStatement.executeUpdate();
-            LOGGER.info(String.format("Product %s with ID %s has been updated",
-                    product.getName(), String.valueOf(product.getId())));
+            LOGGER.info("Product has been updated");
         } catch (SQLException e) {
             throw new DataProcessingException("Can't update product details", e);
         }
@@ -93,12 +89,20 @@ public class ProductDaoJbdcImpl implements ProductDao {
 
     @Override
     public void delete(Long id) {
-        String query = "DELETE FROM internetshop.products WHERE id = ?";
+        String query = "DELETE FROM internetshop.orders_products WHERE product_id = ?";
+        String query2 = "DELETE FROM internetshop.shopping_cart_products WHERE product_id = ?";
+        String query3 = "DELETE FROM internetshop.products WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
-            LOGGER.info(String.format("Product with ID %s has been deleted", String.valueOf(id)));
+            PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+            preparedStatement2.setLong(1, id);
+            preparedStatement2.executeUpdate();
+            PreparedStatement preparedStatement3 = connection.prepareStatement(query3);
+            preparedStatement3.setLong(1, id);
+            preparedStatement3.executeUpdate();
+            LOGGER.info("Product has been deleted");
         } catch (SQLException e) {
             throw new DataProcessingException("Can't delete product from DB", e);
         }
