@@ -22,9 +22,11 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
 
     @Override
     public ShoppingCart create(ShoppingCart shoppingCart) {
-        String query = "INSERT INTO internetshop.shopping_carts (user_id) VALUES (?)";
+        String insertNewShopCartInfo =
+                "INSERT INTO internetshop.shopping_carts (user_id) VALUES (?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(insertNewShopCartInfo);
             preparedStatement.setLong(1, shoppingCart.getUserId());
             preparedStatement.executeUpdate();
             LOGGER.info("Shopping сart created");
@@ -36,7 +38,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
 
     @Override
     public Optional<ShoppingCart> get(Long id) {
-        String query =
+        String selectShopCartInfo =
                 "SELECT internetshop.shopping_carts.*, "
                         + "internetshop.shopping_cart_products.product_id, "
                         + "internetshop.products.name, internetshop.products.price "
@@ -49,12 +51,11 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
                         + "= internetshop.products.id "
                         + "WHERE shopping_carts.id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(selectShopCartInfo);
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 ShoppingCart shoppingCart = new ShoppingCart(resultSet.getLong("user_id"));
-                shoppingCart.setId(id);
                 do {
                     Product product = new Product(resultSet.getString("name"),
                             resultSet.getDouble("price"));
@@ -72,14 +73,17 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
 
     @Override
     public List<ShoppingCart> getAll() {
-        String query = "SELECT internetshop.shopping_carts.id FROM internetshop.shopping_carts";
+        String selectAllShopCarts = "SELECT internetshop.shopping_carts.id "
+                + "FROM internetshop.shopping_carts";
         try (Connection connection = ConnectionUtil.getConnection()) {
             List<ShoppingCart> shoppingCartList = new ArrayList<>();
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(selectAllShopCarts);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                if (get(resultSet.getLong("id")).isPresent()) {
-                    shoppingCartList.add(get(resultSet.getLong("id")).get());
+                Optional shopCart = get(resultSet.getLong("id"));
+                if (shopCart.isPresent()) {
+                    shoppingCartList.add((ShoppingCart) shopCart.get());
                 }
             }
             LOGGER.info("List of shopping carts provided");
@@ -91,16 +95,19 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
 
     @Override
     public ShoppingCart update(ShoppingCart shoppingCart) {
-        String query = "DELETE FROM internetshop.shopping_cart_products "
+        String deleteOldShopCartInfo = "DELETE FROM internetshop.shopping_cart_products "
                 + "WHERE internetshop.shopping_cart_products.cart_id = ?";
-        String query2 = "INSERT INTO internetshop.shopping_cart_products VALUES (?, ?)";
+        String insertNewShopCartInfo =
+                "INSERT INTO internetshop.shopping_cart_products VALUES (?, ?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
             if (!shoppingCart.getProducts().isEmpty()) {
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                PreparedStatement preparedStatement =
+                        connection.prepareStatement(deleteOldShopCartInfo);
                 preparedStatement.setLong(1, shoppingCart.getId());
                 preparedStatement.executeUpdate();
             }
-            PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+            PreparedStatement preparedStatement2 =
+                    connection.prepareStatement(insertNewShopCartInfo);
             for (Product product: shoppingCart.getProducts()) {
                 preparedStatement2.setLong(1, shoppingCart.getId());
                 preparedStatement2.setLong(2, product.getId());
@@ -115,13 +122,16 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
 
     @Override
     public void delete(Long id) {
-        String query = "DELETE FROM internetshop.shopping_cart_products WHERE cart_id = ?";
-        String query2 = "DELETE FROM internetshop.shopping_carts WHERE id = ?";
+        String deleteShopCartAndProducts =
+                "DELETE FROM internetshop.shopping_cart_products WHERE cart_id = ?";
+        String deleteShopCartFromDb = "DELETE FROM internetshop.shopping_carts WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(deleteShopCartAndProducts);
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
-            PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+            PreparedStatement preparedStatement2 =
+                    connection.prepareStatement(deleteShopCartFromDb);
             preparedStatement2.setLong(1, id);
             preparedStatement2.executeUpdate();
             LOGGER.info("Shopping cart deleted");

@@ -2,3 +2,4 @@
 *.iml
 /target*
 /folder_with_logs
+log4j-application.log

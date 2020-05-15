@@ -21,9 +21,10 @@ public class ProductDaoJbdcImpl implements ProductDao {
 
     @Override
     public Product create(Product product) {
-        String query = "INSERT INTO internetshop.products (name, price) VALUES (?, ?)";
+        String insertNewProductData =
+                "INSERT INTO internetshop.products (name, price) VALUES (?, ?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(insertNewProductData);
             preparedStatement.setString(1, product.getName());
             preparedStatement.setDouble(2, product.getPrice());
             preparedStatement.executeUpdate();
@@ -34,28 +35,11 @@ public class ProductDaoJbdcImpl implements ProductDao {
         return product;
     }
 
-    public Product create(Product element) {
-        String query = "INSERT INTO internetshop.products (name, price) VALUES (?, ?)";
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, element.getName());
-            preparedStatement.setDouble(2, element.getPrice());
-            preparedStatement.executeUpdate();
-            LOGGER.info(String.format(
-                    "Product %s with price %s has been created",
-                    element.getName(),
-                    String.valueOf(element.getPrice())));
-        } catch (SQLException e) {
-            throw new DataProcessingException("Product creationg has failed", e);
-        }
-        return element;
-    }
-
     @Override
     public Optional<Product> get(Long id) {
-        String query = "SELECT * FROM internetshop.products WHERE id = ?";
+        String getProductInfo = "SELECT * FROM internetshop.products WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(getProductInfo);
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -70,10 +54,10 @@ public class ProductDaoJbdcImpl implements ProductDao {
 
     @Override
     public List<Product> getAll() {
-        String query = "SELECT * FROM internetshop.products";
+        String getAllProductsInfo = "SELECT * FROM internetshop.products";
         List<Product> productList = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(getAllProductsInfo);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Long productId = resultSet.getLong("id");
@@ -90,9 +74,10 @@ public class ProductDaoJbdcImpl implements ProductDao {
 
     @Override
     public Product update(Product product) {
-        String query = "UPDATE internetshop.products SET name = ?, price = ? WHERE id = ?";
+        String updatingProductData =
+                "UPDATE internetshop.products SET name = ?, price = ? WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(updatingProductData);
             preparedStatement.setString(1, product.getName());
             preparedStatement.setDouble(2, product.getPrice());
             preparedStatement.setLong(3, product.getId());
@@ -103,36 +88,24 @@ public class ProductDaoJbdcImpl implements ProductDao {
         }
         return product;
     }
-  
-    public Product update(Product element) {
-        String query = "UPDATE internetshop.products SET name = ?, price = ? WHERE id = ?";
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, element.getName());
-            preparedStatement.setDouble(2, element.getPrice());
-            preparedStatement.setLong(3, element.getId());
-            preparedStatement.executeUpdate();
-            LOGGER.info(String.format("Product %s with ID %s has been updated",
-                    element.getName(), String.valueOf(element.getId())));
-        } catch (SQLException e) {
-            throw new DataProcessingException("Can't update product details", e);
-        }
-        return element;
-    }
 
     @Override
     public void delete(Long id) {
-        String query = "DELETE FROM internetshop.orders_products WHERE product_id = ?";
-        String query2 = "DELETE FROM internetshop.shopping_cart_products WHERE product_id = ?";
-        String query3 = "DELETE FROM internetshop.products WHERE id = ?";
+        String deleteProductFromOrders =
+                "DELETE FROM internetshop.orders_products WHERE product_id = ?";
+        String deleteProductFromShopCarts =
+                "DELETE FROM internetshop.shopping_cart_products WHERE product_id = ?";
+        String deleteProductFromDb = "DELETE FROM internetshop.products WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(deleteProductFromOrders);
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
-            PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+            PreparedStatement preparedStatement2 =
+                    connection.prepareStatement(deleteProductFromShopCarts);
             preparedStatement2.setLong(1, id);
             preparedStatement2.executeUpdate();
-            PreparedStatement preparedStatement3 = connection.prepareStatement(query3);
+            PreparedStatement preparedStatement3 = connection.prepareStatement(deleteProductFromDb);
             preparedStatement3.setLong(1, id);
             preparedStatement3.executeUpdate();
             LOGGER.info("Product has been deleted");

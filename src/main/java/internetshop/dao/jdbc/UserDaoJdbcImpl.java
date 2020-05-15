@@ -31,26 +31,24 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public User create(User user) {
-        String query = "INSERT INTO internetshop.users (name, password) VALUES (?, ?)";
-        String query3 =
+        String insertingUserNamePass =
+                "INSERT INTO internetshop.users (name, password) VALUES (?, ?)";
+        String lookingForUserId =
                 "SELECT internetshop.users.id "
                         + "FROM internetshop.users WHERE name = ? AND password = ?";
-        String query2 = "INSERT INTO internetshop.users_roles VALUES (?, ?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(insertingUserNamePass);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.executeUpdate();
-            PreparedStatement preparedStatement3 = connection.prepareStatement(query3);
+            PreparedStatement preparedStatement3 = connection.prepareStatement(lookingForUserId);
             preparedStatement3.setString(1, user.getName());
             preparedStatement3.setString(2, user.getPassword());
             ResultSet resultSet = preparedStatement3.executeQuery();
             if (resultSet.next()) {
                 user.setId(resultSet.getLong("id"));
-                PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
-                preparedStatement2.setLong(1, resultSet.getLong("id"));
-                preparedStatement2.setLong(2, 2L);
-                preparedStatement2.executeUpdate();
+                setUserRoles(user.getId());
             }
             LOGGER.info("New user created");
             return user;
@@ -61,7 +59,7 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public Optional<User> get(Long id) {
-        String query =
+        String selectingUserData =
                 "SELECT internetshop.users.*, internetshop.users_roles.role_id, "
                 + "internetshop.roles.name AS role_name "
                 + "FROM internetshop.users "
@@ -69,7 +67,7 @@ public class UserDaoJdbcImpl implements UserDao {
                 + "INNER JOIN internetshop.roles ON  users_roles.role_id = roles.id "
                 + "WHERE users.id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(selectingUserData);
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -86,9 +84,9 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public List<User> getAll() {
-        String query = "SELECT * FROM internetshop.users";
+        String selectAllUsers = "SELECT * FROM internetshop.users";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(selectAllUsers);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<User> usersList = new ArrayList<>();
             while (resultSet.next()) {
@@ -105,9 +103,10 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public User update(User user) {
-        String query = "UPDATE internetshop.users SET name = ?, password = ? WHERE id = ?";
+        String updatingUserDetails =
+                "UPDATE internetshop.users SET name = ?, password = ? WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(updatingUserDetails);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setLong(3, user.getId());
@@ -121,33 +120,11 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public void delete(Long id) {
-        String allUserOrders =
-                "SELECT internetshop.users.id, internetshop.orders.id as order_id "
-                        + "FROM internetshop.users "
-                        + "INNER JOIN internetshop.orders "
-                        + "ON internetshop.users.id = internetshop.orders.user_id "
-                        + "WHERE users.id = ?";
-        String allUserShopCarts = "SELECT internetshop.users.id, "
-                + "internetshop.shopping_carts.id as shopcart_id "
-                + "FROM internetshop.users "
-                + "INNER JOIN internetshop.shopping_carts "
-                + "ON  internetshop.users.id = internetshop.shopping_carts.id "
-                + "WHERE users.id = ?";
         String deleteUser = "DELETE FROM internetshop.users "
                 + "WHERE internetshop.users.id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(allUserOrders);
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                orderDao.delete(resultSet.getLong("order_id"));
-            }
-            PreparedStatement preparedStatement2 = connection.prepareStatement(allUserShopCarts);
-            preparedStatement2.setLong(1, id);
-            ResultSet resultSet2 = preparedStatement2.executeQuery();
-            while (resultSet2.next()) {
-                shoppingCartDao.delete(resultSet2.getLong("shopcart_id"));
-            }
+            deleteUserOrders(id);
+            deleteUserShopCarts(id);
             PreparedStatement preparedStatement3 = connection.prepareStatement(deleteUser);
             preparedStatement3.setLong(1, id);
             preparedStatement3.executeUpdate();
@@ -159,9 +136,10 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public Optional<User> getByLogin(String login) {
-        String query = "SELECT internetshop.users.* FROM internetshop.users WHERE name = ?";
+        String selectingUserByLogin =
+                "SELECT internetshop.users.* FROM internetshop.users WHERE name = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(selectingUserByLogin);
             preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -175,6 +153,46 @@ public class UserDaoJdbcImpl implements UserDao {
         return Optional.empty();
     }
 
+    public void deleteUserOrders(Long id) {
+        String allUserOrders =
+                "SELECT internetshop.users.id, internetshop.orders.id as order_id "
+                        + "FROM internetshop.users "
+                        + "INNER JOIN internetshop.orders "
+                        + "ON internetshop.users.id = internetshop.orders.user_id "
+                        + "WHERE users.id = ?";
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(allUserOrders);
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                orderDao.delete(resultSet.getLong("order_id"));
+            }
+            LOGGER.info("User orders have been deleted");
+        } catch (SQLException e) {
+            throw new DataProcessingException("Can't delete this user details", e);
+        }
+    }
+
+    public void deleteUserShopCarts(Long id) {
+        String allUserShopCarts = "SELECT internetshop.users.id, "
+                + "internetshop.shopping_carts.id as shopcart_id "
+                + "FROM internetshop.users "
+                + "INNER JOIN internetshop.shopping_carts "
+                + "ON  internetshop.users.id = internetshop.shopping_carts.id "
+                + "WHERE users.id = ?";
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            PreparedStatement preparedStatement2 = connection.prepareStatement(allUserShopCarts);
+            preparedStatement2.setLong(1, id);
+            ResultSet resultSet2 = preparedStatement2.executeQuery();
+            while (resultSet2.next()) {
+                shoppingCartDao.delete(resultSet2.getLong("shopcart_id"));
+            }
+            LOGGER.info("User shopping carts have been deleted");
+        } catch (SQLException e) {
+            throw new DataProcessingException("Can't delete this user details", e);
+        }
+    }
+
     public User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         Long userId = resultSet.getLong("id");
         String userName = resultSet.getString("name");
@@ -186,13 +204,13 @@ public class UserDaoJdbcImpl implements UserDao {
     }
 
     public Set<Role> getUserRoles(Long userId) {
-        String query = "SELECT internetshop.users_roles.*, internetshop.roles.name "
+        String getUserRoles = "SELECT internetshop.users_roles.*, internetshop.roles.name "
                 + "FROM internetshop.users_roles "
                 + "INNER JOIN internetshop.roles "
                 + "ON internetshop.users_roles.role_id = internetshop.roles.id "
                 + "WHERE internetshop.users_roles.user_id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(getUserRoles);
             preparedStatement.setLong(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             Set<Role> roles = new HashSet<>();
@@ -200,6 +218,19 @@ public class UserDaoJdbcImpl implements UserDao {
                 roles.add(Role.of(resultSet.getString("name")));
             }
             return roles;
+        } catch (SQLException e) {
+            throw new DataProcessingException("Can't find this user roles", e);
+        }
+    }
+
+    public void setUserRoles(Long userId) {
+        String insertingRoleForUser = "INSERT INTO internetshop.users_roles VALUES (?, ?)";
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            PreparedStatement preparedStatement2 =
+                    connection.prepareStatement(insertingRoleForUser);
+            preparedStatement2.setLong(1, userId);
+            preparedStatement2.setLong(2, 2L);
+            preparedStatement2.executeUpdate();
         } catch (SQLException e) {
             throw new DataProcessingException("Can't find this user roles", e);
         }

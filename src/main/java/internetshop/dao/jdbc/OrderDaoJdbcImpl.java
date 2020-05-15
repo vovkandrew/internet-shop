@@ -23,19 +23,22 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public Order create(Order order) {
-        String query = "INSERT INTO internetshop.orders (user_id) VALUES (?)";
-        String query2 =
+        String insertNewOrderInfo =
+                "INSERT INTO internetshop.orders (user_id) VALUES (?)";
+        String insertOrderProductsInfo =
                 "INSERT INTO internetshop.orders_products (order_id, product_id) VALUES (?, ?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement preparedStatement =
-                    connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                    connection.prepareStatement(insertNewOrderInfo,
+                            Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setLong(1, order.getUserId());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
                 order.setId(resultSet.getLong(1));
             }
-            PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+            PreparedStatement preparedStatement2 =
+                    connection.prepareStatement(insertOrderProductsInfo);
             for (Product product: order.getProducts()) {
                 preparedStatement2.setLong(1, order.getId());
                 preparedStatement2.setLong(2, product.getId());
@@ -50,7 +53,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public Optional<Order> get(Long id) {
-        String query =
+        String getProductInfo =
                 "SELECT internetshop.orders.*, internetshop.orders_products.product_id, "
                 + "internetshop.products.name, internetshop.products.price "
                         + "FROM internetshop.orders "
@@ -58,9 +61,10 @@ public class OrderDaoJdbcImpl implements OrderDao {
                 + "INNER JOIN internetshop.products ON orders_products.product_id = products.id "
                 + "WHERE orders.id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(getProductInfo);
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery(query);
+            ResultSet resultSet = preparedStatement.executeQuery(getProductInfo);
             resultSet.next();
             Order order = new Order(resultSet.getLong("user_id"));
             order.setId(id);
@@ -78,14 +82,17 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public List<Order> getAll() {
-        String query = "SELECT internetshop.orders.id FROM internetshop.orders";
+        String getAllProductsInfo =
+                "SELECT internetshop.orders.id FROM internetshop.orders";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(getAllProductsInfo);
+            ResultSet resultSet = preparedStatement.executeQuery(getAllProductsInfo);
             List<Order> orders = new ArrayList<>();
             while (resultSet.next()) {
-                if (get(resultSet.getLong("id")).isPresent()) {
-                    orders.add(get(resultSet.getLong("id")).get());
+                Optional order = get(resultSet.getLong("id"));
+                if (order.isPresent()) {
+                    orders.add((Order) order.get());
                 }
             }
             LOGGER.info("Orders have been found in the database");
@@ -97,14 +104,17 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public Order update(Order order) {
-        String query = "DELETE FROM internetshop.orders_products "
+        String deleteOldOrderInfo = "DELETE FROM internetshop.orders_products "
                 + "WHERE orders_products.order_id = ?";
-        String query2 = "INSERT INTO internetshop.orders_products VALUES (?, ?)";
+        String insertNewOrderInfo =
+                "INSERT INTO internetshop.orders_products VALUES (?, ?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(deleteOldOrderInfo);
             preparedStatement.setLong(1, order.getId());
             preparedStatement.executeUpdate();
-            PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+            PreparedStatement preparedStatement2 =
+                    connection.prepareStatement(insertNewOrderInfo);
             for (Product product: order.getProducts()) {
                 preparedStatement2.setLong(1, order.getId());
                 preparedStatement2.setLong(2, product.getId());
@@ -119,14 +129,17 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public void delete(Long id) {
-        String query = "DELETE FROM internetshop.orders_products "
+        String deleteOrderProductsFromDb =
+                "DELETE FROM internetshop.orders_products "
                 + "WHERE internetshop.orders_products.order_id = ?";
-        String query2 = "DELETE FROM internetshop.orders WHERE id = ?";
+        String deleteOrderFromDb = "DELETE FROM internetshop.orders WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(deleteOrderProductsFromDb);
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
-            PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+            PreparedStatement preparedStatement2 =
+                    connection.prepareStatement(deleteOrderFromDb);
             preparedStatement2.setLong(1, id);
             preparedStatement2.executeUpdate();
             LOGGER.info("Shopping cart deleted");
