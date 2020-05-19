@@ -32,19 +32,22 @@ public class UserDaoJdbcImpl implements UserDao {
     @Override
     public User create(User user) {
         String insertingUserNamePass =
-                "INSERT INTO internetshop.users (name, password) VALUES (?, ?)";
+                "INSERT INTO internetshop.users (name, password, salt) VALUES (?, ?, ?)";
         String lookingForUserId =
                 "SELECT internetshop.users.id "
-                        + "FROM internetshop.users WHERE name = ? AND password = ?";
+                        + "FROM internetshop.users "
+                        + "WHERE name = ? AND password = ? AND salt = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(insertingUserNamePass);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setBytes(3,user.getSalt());
             preparedStatement.executeUpdate();
             PreparedStatement preparedStatement3 = connection.prepareStatement(lookingForUserId);
             preparedStatement3.setString(1, user.getName());
             preparedStatement3.setString(2, user.getPassword());
+            preparedStatement3.setBytes(3, user.getSalt());
             ResultSet resultSet = preparedStatement3.executeQuery();
             if (resultSet.next()) {
                 user.setId(resultSet.getLong("id"));
@@ -104,12 +107,13 @@ public class UserDaoJdbcImpl implements UserDao {
     @Override
     public User update(User user) {
         String updatingUserDetails =
-                "UPDATE internetshop.users SET name = ?, password = ? WHERE id = ?";
+                "UPDATE internetshop.users SET name = ?, password = ?, salt = ? WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updatingUserDetails);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setLong(3, user.getId());
+            preparedStatement.setBytes(3, user.getSalt());
+            preparedStatement.setLong(4, user.getId());
             preparedStatement.executeUpdate();
             LOGGER.info("User details have been updated");
         } catch (SQLException e) {
@@ -197,8 +201,10 @@ public class UserDaoJdbcImpl implements UserDao {
         Long userId = resultSet.getLong("id");
         String userName = resultSet.getString("name");
         String userPassword = resultSet.getString("password");
+        byte[] userSalt = resultSet.getBytes("salt");
         User user = new User(userName, userPassword);
         user.setId(userId);
+        user.setSalt(userSalt);
         user.setRoles(getUserRoles(userId));
         return user;
     }
