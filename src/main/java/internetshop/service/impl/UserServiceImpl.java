@@ -39,12 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-        User newUser = new User(user.getName());
-        byte[] newSalt = getSalt();
-        newUser.setSalt(newSalt);
-        String hashedPassword = hashPassword(user.getPassword(), newSalt);
-        newUser.setPassword(hashedPassword);
-        return userDao.update(newUser);
+        return userDao.update(user);
     }
 
     @Override

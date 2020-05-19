@@ -16,7 +16,7 @@ public class PasswordUtil {
                 hashedPassword.append(String.format("%02x", b));
             }
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return hashedPassword.toString();
     }
@@ -26,20 +26,5 @@ public class PasswordUtil {
         byte[] salt = new byte[16];
         random.nextBytes(salt);
         return salt;
-    }
-
-    public static boolean isValid(String userPassword, byte[] userSalt, String passwordToCheck) {
-        StringBuilder hashedPasswordToCheck = new StringBuilder();
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
-            messageDigest.update(userSalt);
-            byte[] passwordToCheckInBytes = messageDigest.digest(passwordToCheck.getBytes());
-            for (byte b: passwordToCheckInBytes) {
-                hashedPasswordToCheck.append(String.format("%02x", b));
-            }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return userPassword.equals(hashedPasswordToCheck.toString());
     }
 }

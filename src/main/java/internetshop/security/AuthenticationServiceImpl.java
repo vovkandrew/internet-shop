@@ -1,6 +1,6 @@
 package internetshop.security;
 
-import static internetshop.util.password.PasswordUtil.isValid;
+import static internetshop.util.password.PasswordUtil.hashPassword;
 
 import internetshop.exception.AuthenticationException;
 import internetshop.lib.Inject;
@@ -17,7 +17,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public User getByLogin(String login, String password) throws AuthenticationException {
         User user = userService.getByLogin(login)
                 .orElseThrow(() -> new AuthenticationException("Wrong login or password"));
-        if (isValid(user.getPassword(), user.getSalt(), password)) {
+        if (hashPassword(password, user.getSalt()).equals(user.getPassword())) {
             return user;
         }
         throw new AuthenticationException("Wrong login or password");
