@@ -23,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order completeOrder(List<Product> products, User user) {
         List<Product> newOrder = List.copyOf(products);
-        Order order = new Order(user);
+        Order order = new Order(user.getId());
         order.addProducts(newOrder);
         return orderDao.create(order);
     }
@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getUserOrders(User user) {
         return orderDao.getAll().stream()
-                .filter(order -> order.getUser().getId().equals(user.getId()))
+                .filter(order -> order.getUserId().equals(user.getId()))
                 .collect(Collectors.toList());
     }
 

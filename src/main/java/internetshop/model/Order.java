@@ -6,11 +6,14 @@ import java.util.List;
 public class Order {
 
     private Long id;
-    private User user;
+    private Long userId;
     private List<Product> products;
 
-    public Order(User user) {
-        this.user = user;
+    public Order() {
+    }
+
+    public Order(Long userId) {
+        this.userId = userId;
         this.products = new ArrayList<>();
     }
 
@@ -34,8 +37,16 @@ public class Order {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     public String getProductsDescription() {
