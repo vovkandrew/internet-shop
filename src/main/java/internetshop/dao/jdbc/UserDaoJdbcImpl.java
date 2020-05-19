@@ -108,6 +108,7 @@ public class UserDaoJdbcImpl implements UserDao {
     public User update(User user) {
         String updatingUserDetails =
                 "UPDATE internetshop.users SET name = ?, password = ?, salt = ? WHERE id = ?";
+
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updatingUserDetails);
             preparedStatement.setString(1, user.getName());
