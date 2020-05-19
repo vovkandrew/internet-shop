@@ -1,5 +1,8 @@
 package internetshop.service.impl;
 
+import static internetshop.util.password.PasswordUtil.getSalt;
+import static internetshop.util.password.PasswordUtil.hashPassword;
+
 import internetshop.dao.UserDao;
 import internetshop.lib.Inject;
 import internetshop.lib.Service;
@@ -16,7 +19,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-        return userDao.create(user);
+        User newUser = new User(user.getName());
+        byte[] newSalt = getSalt();
+        newUser.setSalt(newSalt);
+        String hashedPassword = hashPassword(user.getPassword(), newSalt);
+        newUser.setPassword(hashedPassword);
+        return userDao.create(newUser);
     }
 
     @Override
